@@ -26,6 +26,8 @@ public class EjemploDOMLeerNS {
     private static final String VERSION_NOMBRE_TAG = "nombre";
     private static final String VERSION_API_TAG = "api";
     private static final String VERSION_ATT_NUMERO = "numero";
+    
+    private static final String VERSIONS_NS_URI = "http://www.dom.com/versions";
 
     private static final String VERSIONES_INPUT_FILE = Paths.get("src", "docs", "versiones_ns.xml").toString();
 
@@ -39,6 +41,7 @@ public class EjemploDOMLeerNS {
             File inputFile = new File(VERSIONES_INPUT_FILE);
 
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+             dbFactory.setNamespaceAware(true);
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.parse(inputFile);
             //elimina hijos con texto vacío y fusiona en un único nodo de texto varios adyacentes.
@@ -48,12 +51,17 @@ public class EjemploDOMLeerNS {
                     + doc.getDocumentElement().getNodeName());
 
             NodeList nList = doc.getElementsByTagName(VERSION_TAG);
+            
+           
 
             System.out.println("----------------------------");
            versionsNotQualif =  toVersionList(nList);
             
-            nList = doc.getElementsByTagName(VERSION_Q_TAG);
-            versionsQualif= toVersionList(nList);
+          
+           NodeList nListQ = doc.getElementsByTagNameNS(VERSIONS_NS_URI, VERSION_TAG);
+           // nListQ = doc.getElementsByTagName(VERSION_Q_TAG);
+           
+            versionsQualif= toVersionList(nListQ);
 
             for (Version v : versionsNotQualif) {
                 System.out.println("Version no calificada: " + contador + " " + v);
